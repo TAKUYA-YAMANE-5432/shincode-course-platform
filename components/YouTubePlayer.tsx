@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 
 type Props = {
   videoId: string
@@ -8,7 +9,44 @@ type Props = {
 }
 
 export function YouTubePlayer({ videoId, title }: Props) {
+  const [activated, setActivated] = useState(false)
   const [loaded, setLoaded] = useState(false)
+
+  const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`
+
+  if (!activated) {
+    return (
+      <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-black">
+        <Image
+          src={thumbnailUrl}
+          alt={title ?? '講座動画のサムネイル'}
+          fill
+          priority
+          className="object-cover"
+        />
+        {/* dark overlay */}
+        <div className="absolute inset-0 bg-black/20" />
+        {/* play button */}
+        <button
+          onClick={() => setActivated(true)}
+          aria-label="動画を再生する"
+          className="absolute inset-0 flex items-center justify-center group"
+        >
+          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-[#ff0000] shadow-lg transition-transform group-hover:scale-110">
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="white"
+              aria-hidden="true"
+            >
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </span>
+        </button>
+      </div>
+    )
+  }
 
   return (
     <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-black">
@@ -16,7 +54,7 @@ export function YouTubePlayer({ videoId, title }: Props) {
         <div className="absolute inset-0 animate-pulse bg-gray-800" />
       )}
       <iframe
-        src={`https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1`}
+        src={`https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&autoplay=1`}
         title={title ?? '講座動画'}
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen

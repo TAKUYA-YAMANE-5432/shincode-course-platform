@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { getCourses } from '@/lib/courses'
+import { getCoursesCount, getFeaturedCourses } from '@/lib/courses'
 import { CourseCard } from '@/components/CourseCard'
 
 const CATEGORIES = [
@@ -12,8 +12,10 @@ const CATEGORIES = [
 ]
 
 export default async function HomePage() {
-  const courses = await getCourses()
-  const featured = courses.slice(0, 4)
+  const [totalCount, featured] = await Promise.all([
+    getCoursesCount(),
+    getFeaturedCourses(4),
+  ])
 
   return (
     <div className="flex flex-1 flex-col">
@@ -58,7 +60,7 @@ export default async function HomePage() {
 
           <div className="grid grid-cols-2 gap-3 md:w-72 animate-fade-up delay-200">
             {[
-              { value: `${courses.length}`,  label: '講座数' },
+              { value: `${totalCount}`,  label: '講座数' },
               { value: '1,200+',             label: '受講者数' },
               { value: '4.8',                label: '平均評価' },
               { value: '100%',               label: '無料アクセス' },
@@ -149,7 +151,7 @@ export default async function HomePage() {
                 ))}
               </div>
               <blockquote className="mb-6 leading-relaxed text-[#cec0fc]">
-                "ShinCode の講座は説明がわかりやすく、手を動かしながら学べるので挫折せずに続けられました。転職活動でも大いに役立ちました！"
+                &ldquo;ShinCode の講座は説明がわかりやすく、手を動かしながら学べるので挫折せずに続けられました。転職活動でも大いに役立ちました！&rdquo;
               </blockquote>
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#a435f0]/20 text-sm font-bold text-[#cec0fc]">T</div>

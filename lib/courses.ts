@@ -20,6 +20,7 @@ export async function getCourses(): Promise<Course[]> {
 export async function getCourse(id: string): Promise<Course | null> {
   'use cache'
   cacheTag('courses')
+  cacheTag(`course-${id}`)
   cacheLife('hours')
 
   const supabase = createPublicClient()
@@ -30,6 +31,36 @@ export async function getCourse(id: string): Promise<Course | null> {
     .single()
 
   return (data as Course) ?? null
+}
+
+export async function getFeaturedCourses(limit: number = 4): Promise<Course[]> {
+  'use cache'
+  cacheTag('courses')
+  cacheLife('hours')
+
+  const supabase = createPublicClient()
+  const { data } = await supabase
+    .from('courses')
+    .select('*')
+    .eq('published', true)
+    .order('created_at', { ascending: false })
+    .limit(limit)
+
+  return (data as Course[]) ?? []
+}
+
+export async function getCoursesCount(): Promise<number> {
+  'use cache'
+  cacheTag('courses')
+  cacheLife('hours')
+
+  const supabase = createPublicClient()
+  const { count } = await supabase
+    .from('courses')
+    .select('*', { count: 'exact', head: true })
+    .eq('published', true)
+
+  return count ?? 0
 }
 
 export async function getChapters(courseId: string): Promise<Chapter[]> {

@@ -1,20 +1,21 @@
 import Link from 'next/link'
-import { getCoursesCount, getFeaturedCourses } from '@/lib/courses'
+import { getCoursesCount, getFeaturedCourses, getCategoryCourseCounts } from '@/lib/courses'
 import { CourseCard } from '@/components/CourseCard'
 
 const CATEGORIES = [
-  { name: 'Web 開発',    count: '3コース', bg: 'bg-violet-50  hover:bg-violet-100  border-violet-200'  },
-  { name: 'JavaScript', count: '1コース', bg: 'bg-yellow-50  hover:bg-yellow-100  border-yellow-300'  },
-  { name: 'TypeScript', count: '1コース', bg: 'bg-blue-50    hover:bg-blue-100    border-blue-200'    },
-  { name: 'React',      count: '1コース', bg: 'bg-cyan-50    hover:bg-cyan-100    border-cyan-200'    },
-  { name: 'Next.js',    count: '1コース', bg: 'bg-gray-50    hover:bg-gray-100    border-gray-300'    },
-  { name: 'バックエンド', count: '2コース', bg: 'bg-green-50   hover:bg-green-100   border-green-200'   },
+  { name: 'Web 開発',    bg: 'bg-violet-50  hover:bg-violet-100  border-violet-200'  },
+  { name: 'JavaScript', bg: 'bg-yellow-50  hover:bg-yellow-100  border-yellow-300'  },
+  { name: 'TypeScript', bg: 'bg-blue-50    hover:bg-blue-100    border-blue-200'    },
+  { name: 'React',      bg: 'bg-cyan-50    hover:bg-cyan-100    border-cyan-200'    },
+  { name: 'Next.js',    bg: 'bg-gray-50    hover:bg-gray-100    border-gray-300'    },
+  { name: 'バックエンド', bg: 'bg-green-50   hover:bg-green-100   border-green-200'   },
 ]
 
 export default async function HomePage() {
-  const [totalCount, featured] = await Promise.all([
+  const [totalCount, featured, categoryCounts] = await Promise.all([
     getCoursesCount(),
     getFeaturedCourses(4),
+    getCategoryCourseCounts(),
   ])
 
   return (
@@ -86,7 +87,7 @@ export default async function HomePage() {
                 className={`rounded border p-3 transition-colors ${cat.bg}`}
               >
                 <p className="text-sm font-bold text-[#1c1d1f]">{cat.name}</p>
-                <p className="mt-0.5 text-xs text-[#6a6f73]">{cat.count}</p>
+                <p className="mt-0.5 text-xs text-[#6a6f73]">{categoryCounts[cat.name] ?? 0}コース</p>
               </Link>
             ))}
           </div>

@@ -63,6 +63,25 @@ export async function getCoursesCount(): Promise<number> {
   return count ?? 0
 }
 
+export async function getCategoryCourseCounts(): Promise<Record<string, number>> {
+  'use cache'
+  cacheTag('courses')
+  cacheLife('hours')
+
+  const supabase = createPublicClient()
+  const { data } = await supabase
+    .from('courses')
+    .select('category')
+    .eq('published', true)
+
+  const counts: Record<string, number> = {}
+  for (const row of (data ?? []) as { category: string | null }[]) {
+    if (!row.category) continue
+    counts[row.category] = (counts[row.category] ?? 0) + 1
+  }
+  return counts
+}
+
 export async function getChapters(courseId: string): Promise<Chapter[]> {
   'use cache'
   cacheTag('courses')

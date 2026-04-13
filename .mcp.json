@@ -23,6 +23,18 @@
       "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "ghp_xxxxxxxxxxxx"
       }
+    },
+    "serena": {
+      "command": "uvx",
+      "args": [
+        "--system-certs",
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena",
+        "start-mcp-server",
+        "--context",
+        "ide-assistant"
+      ]
     }
   }
 }

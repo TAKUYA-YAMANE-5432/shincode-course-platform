@@ -1,0 +1,1 @@
+- [Project Architecture](project_architecture.md) — Core patterns, Supabase client split, middleware naming bug, admin auth pattern

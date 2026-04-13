@@ -11,10 +11,14 @@ async function HeaderAuthSection() {
   if (isAuthenticated) {
     const { data: profile } = await supabase
       .from('profiles')
-      .select('role')
+      .select('role, display_name')
       .eq('id', data.claims.sub)
       .single()
     const isAdmin = profile?.role === 'admin'
+
+    const email = data.claims.email as string | undefined
+    const displayName = profile?.display_name as string | undefined
+    const initial = (displayName?.[0] ?? email?.[0] ?? 'U').toUpperCase()
 
     return (
       <>
@@ -28,9 +32,11 @@ async function HeaderAuthSection() {
         )}
         <Link
           href="/profile"
-          className="rounded px-3 py-1.5 text-sm font-medium text-[#1c1d1f] transition-colors hover:bg-[#f7f9fa]"
+          title={displayName ?? email ?? 'プロフィール'}
+          aria-label="プロフィール"
+          className="flex h-8 w-8 items-center justify-center rounded-full bg-[#a435f0] text-sm font-bold text-white transition-opacity hover:opacity-80"
         >
-          プロフィール
+          {initial}
         </Link>
         <form action={signOut}>
           <button
